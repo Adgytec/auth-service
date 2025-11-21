@@ -15,14 +15,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func main() {
-	envErr := godotenv.Load()
-	if envErr != nil {
-		log.Warn().
-			Err(envErr).
-			Msg("failed to load .env")
-	}
-
+func initLogger() {
 	// add logger details
 	logLevelStr := strings.ToLower(os.Getenv("LOG_LEVEL"))
 	logLevel, parseErr := zerolog.ParseLevel(logLevelStr)
@@ -48,6 +41,19 @@ func main() {
 		}
 	}
 	log.Logger = log.Output(output)
+
+}
+
+func main() {
+	envErr := godotenv.Load()
+	if envErr != nil {
+		log.Warn().
+			Err(envErr).
+			Msg("failed to load .env")
+	}
+
+	// init logger
+	initLogger()
 
 	rootCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
