@@ -25,8 +25,10 @@ func NewHTTPRouter() *chi.Mux {
 	if originEnv != "" {
 		allowedOrigins = strings.Split(originEnv, ",")
 	} else {
-		log.Warn().Msg("ALLOWED_ORIGINS not set, using default")
-		allowedOrigins = []string{"https://accounts.adgytec.in"} // default
+		log.Warn().Msg("ALLOWED_ORIGINS not set")
+		if os.Getenv("ENV") == "development" {
+			allowedOrigins = []string{"http://localhost:*"}
+		}
 	}
 
 	mux.Use(cors.Handler(cors.Options{
