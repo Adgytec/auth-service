@@ -62,14 +62,12 @@ func main() {
 
 	go func() {
 		if err := appServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Panic().
-				Err(err).
-				Send()
+			log.Error().Err(err).Msg("server error, triggering shutdown")
+			stop()
 		}
 	}()
 
 	<-rootCtx.Done()
-	stop()
 
 	// gracefull shutdown for server here
 	if err := appServer.Shutdown(); err != nil {
