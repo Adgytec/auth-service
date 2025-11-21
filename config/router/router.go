@@ -1,6 +1,9 @@
 package router
 
 import (
+	"os"
+	"strings"
+
 	"github.com/Adgytec/auth-service/services/authentication"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -16,8 +19,14 @@ func NewHTTPRouter() *chi.Mux {
 	mux.Use(middleware.StripSlashes)
 	mux.Use(middleware.Heartbeat("/health"))
 
-	allowedOrigins := []string{
-		"https://accounts.adgytec.in",
+	originEnv := os.Getenv("ALLOWED_ORIGINS")
+	var allowedOrigins []string
+
+	if originEnv != "" {
+		allowedOrigins = strings.Split(originEnv, ",")
+	} else {
+		log.Warn().Msg("ALLOWED_ORIGINS not set, using default")
+		allowedOrigins = []string{"https://accounts.adgytec.in"} // default
 	}
 
 	mux.Use(cors.Handler(cors.Options{
