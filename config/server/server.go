@@ -30,5 +30,18 @@ func (s *httpAndGRPCServer) Shutdown() error {
 }
 
 func NewServer() (Server, error) {
-	return &httpAndGRPCServer{}, nil
+	httpServer, httpServerErr := newHTTPServer()
+	if httpServerErr != nil {
+		return nil, httpServerErr
+	}
+
+	grpcServer, grpcServerErr := newHTTPServer()
+	if grpcServerErr != nil {
+		return nil, grpcServerErr
+	}
+
+	return &httpAndGRPCServer{
+		httpServer: httpServer,
+		grpcServer: grpcServer,
+	}, nil
 }
