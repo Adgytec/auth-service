@@ -26,7 +26,7 @@ func main() {
 	// add logger details
 	logLevelStr := strings.ToLower(os.Getenv("LOG_LEVEL"))
 	logLevel, parseErr := zerolog.ParseLevel(logLevelStr)
-	if parseErr != nil {
+	if parseErr != nil || logLevel == zerolog.NoLevel {
 		log.Warn().
 			Err(parseErr).
 			Str("log_level_provided", logLevelStr).
