@@ -40,13 +40,13 @@ func newGRPCServer() (Server, error) {
 			Msgf("missing GRPC_PORT env variable, using default grpc port: %s", defaultGRPCPort)
 	}
 
-	listener, listenerErr := net.Listen("tcp", grpcPort)
+	listener, listenerErr := net.Listen("tcp", ":"+grpcPort)
 	if listenerErr != nil {
 		return nil, listenerErr
 	}
 
 	serverRegistrar := grpc.NewServer()
-	auth.RegisterAuthServiceServer(serverRegistrar, authentication.NewAuthService())
+	auth.RegisterAuthServiceServer(serverRegistrar, authentication.NewAuthServicePC())
 
 	return &grpcServer{
 		server:   serverRegistrar,
