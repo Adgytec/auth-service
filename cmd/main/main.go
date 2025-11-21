@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"io"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
@@ -43,4 +46,12 @@ func main() {
 		}
 	}
 	log.Logger = log.Output(output)
+
+	rootCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	<-rootCtx.Done()
+	stop()
+
+	// gracefull shutdown for server here
 }
