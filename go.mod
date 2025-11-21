@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/Adgytec/service-protos v0.0.0-20251121122531-9daa52031771 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	golang.org/x/net v0.46.1-0.20251013234738-63d1a5100f82 // indirect

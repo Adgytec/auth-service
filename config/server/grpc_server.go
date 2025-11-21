@@ -4,6 +4,8 @@ import (
 	"net"
 	"os"
 
+	"github.com/Adgytec/auth-service/services/authentication"
+	"github.com/Adgytec/service-protos/auth/v1"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
@@ -44,6 +46,7 @@ func newGRPCServer() (Server, error) {
 	}
 
 	serverRegistrar := grpc.NewServer()
+	auth.RegisterAuthServiceServer(serverRegistrar, authentication.NewAuthService())
 
 	return &grpcServer{
 		server:   serverRegistrar,
