@@ -1,5 +1,7 @@
 package server
 
+import "errors"
+
 type Server interface {
 	ListenAndServe() error
 	Shutdown() error
@@ -22,11 +24,7 @@ func (s *httpAndGRPCServer) ListenAndServe() error {
 func (s *httpAndGRPCServer) Shutdown() error {
 	httpShutdownErr := s.httpServer.Shutdown()
 	grpcShutdownErr := s.grpcServer.Shutdown()
-	if httpShutdownErr != nil {
-		return httpShutdownErr
-	}
-
-	return grpcShutdownErr
+	return errors.Join(httpShutdownErr, grpcShutdownErr)
 }
 
 func NewServer() (Server, error) {
