@@ -1,6 +1,8 @@
 package server
 
-import "errors"
+import (
+	"errors"
+)
 
 type Server interface {
 	ListenAndServe() error
@@ -13,12 +15,19 @@ type httpAndGRPCServer struct {
 }
 
 func (s *httpAndGRPCServer) ListenAndServe() error {
-	httpServerErr := s.httpServer.ListenAndServe()
-	if httpServerErr != nil {
-		return httpServerErr
-	}
+	errCh := make(chan error, 2)
 
-	return s.grpcServer.ListenAndServe()
+	// Start HTTP server
+	go func() {
+		errCh <- s.httpServer.ListenAndServe()
+	}()
+
+	// Start gRPC server
+	go func() {
+		errCh <- s.grpcServer.ListenAndServe()
+	}()
+
+	return <-errCh
 }
 
 func (s *httpAndGRPCServer) Shutdown() error {
