@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"io"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -60,7 +61,7 @@ func main() {
 	}
 
 	go func() {
-		if err := appServer.ListenAndServe(); err != nil {
+		if err := appServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Panic().
 				Err(err).
 				Send()
