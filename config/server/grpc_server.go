@@ -29,7 +29,7 @@ func (s *grpcServer) ListenAndServe() error {
 func (s *grpcServer) Shutdown() error {
 	log.Info().Msg("grpc server shutting down")
 	s.server.GracefulStop()
-	return nil
+	return s.listener.Close()
 }
 
 func newGRPCServer() (Server, error) {
