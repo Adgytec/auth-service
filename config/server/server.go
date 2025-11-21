@@ -35,7 +35,7 @@ func NewServer() (Server, error) {
 		return nil, httpServerErr
 	}
 
-	grpcServer, grpcServerErr := newHTTPServer()
+	grpcServer, grpcServerErr := newGRPCServer()
 	if grpcServerErr != nil {
 		return nil, grpcServerErr
 	}
