@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/Adgytec/auth-service/services/authentication"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -27,6 +28,8 @@ func NewHTTPRouter() *chi.Mux {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+
+	mux.Mount("/", authentication.NewServiceMux().Router())
 
 	return mux
 }
