@@ -8,6 +8,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/Adgytec/auth-service/config/server"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -50,8 +51,33 @@ func main() {
 	rootCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
+	appServer, serverErr := server.NewServer()
+	if serverErr != nil {
+		log.Fatal().
+			Err(serverErr).
+			Str("action", "new server").
+			Send()
+	}
+
+	go func() {
+		if err := appServer.ListenAndServe(); err != nil {
+			log.Panic().
+				Err(err).
+				Send()
+		}
+	}()
+
 	<-rootCtx.Done()
 	stop()
 
 	// gracefull shutdown for server here
+	if err := appServer.Shutdown(); err != nil {
+		log.Error().
+			Err(err).
+			Str("action", "server shutdown").
+			Send()
+	} else {
+		log.Info().
+			Msg("server shutdown gracefully")
+	}
 }

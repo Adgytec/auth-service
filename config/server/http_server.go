@@ -14,9 +14,14 @@ const defaultHTTPPort = "8080"
 
 type httpServer struct {
 	server *http.Server
+	port   string
 }
 
 func (s *httpServer) ListenAndServe() error {
+	log.Info().
+		Str("port", s.port).
+		Msg("http server started listening")
+
 	return s.server.ListenAndServe()
 }
 
@@ -53,5 +58,6 @@ func newHTTPServer() (Server, error) {
 
 	return &httpServer{
 		server: &appServer,
+		port:   httpPort,
 	}, nil
 }
