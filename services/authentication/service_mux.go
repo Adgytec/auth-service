@@ -12,8 +12,9 @@ import (
 )
 
 type authServiceMux struct {
-	service    *authService
-	jwtKeyfunc keyfunc.Keyfunc
+	service      *authService
+	jwtKeyfunc   keyfunc.Keyfunc
+	cookieDomain string
 }
 
 func (m *authServiceMux) Router() *chi.Mux {
@@ -36,6 +37,11 @@ func NewServiceMux(s storage.Storage) (services.Mux, error) {
 		return nil, errors.New("can't find value for AWS_USER_POOL_REGION env variable")
 	}
 
+	cookieDomain := os.Getenv("COOKIE_DOMAIN")
+	if cookieDomain == "" {
+		return nil, errors.New("can't find value for COOKIE_DOMAIN env variable")
+	}
+
 	jwkSetEndpoint := fmt.Sprintf("https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json", userPoolRegion, userPoolID)
 	jwtKeyfunc, keyFuncErr := keyfunc.NewDefault([]string{jwkSetEndpoint})
 	if keyFuncErr != nil {
@@ -43,7 +49,8 @@ func NewServiceMux(s storage.Storage) (services.Mux, error) {
 	}
 
 	return &authServiceMux{
-		service:    newAuthService(s),
-		jwtKeyfunc: jwtKeyfunc,
+		service:      newAuthService(s),
+		jwtKeyfunc:   jwtKeyfunc,
+		cookieDomain: cookieDomain,
 	}, nil
 }

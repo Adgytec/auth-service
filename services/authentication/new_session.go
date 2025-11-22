@@ -34,7 +34,7 @@ func (m *authServiceMux) newSession(w http.ResponseWriter, r *http.Request) {
 		Name:     cookieKeySessionID,
 		Value:    sessionID,
 		Path:     "/",
-		Domain:   ".adgytec.in",
+		Domain:   m.cookieDomain,
 		Expires:  time.Now().Add(sessionCookieDuration),
 		HttpOnly: true,
 		Secure:   true,
