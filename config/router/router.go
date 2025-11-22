@@ -20,7 +20,7 @@ func NewHTTPRouter() *chi.Mux {
 	mux.Use(middleware.Heartbeat("/health"))
 
 	originEnv := os.Getenv("ALLOWED_ORIGINS")
-	var allowedOrigins []string
+	allowedOrigins := []string{}
 
 	if originEnv != "" {
 		allowedOrigins = strings.Split(originEnv, ",")
