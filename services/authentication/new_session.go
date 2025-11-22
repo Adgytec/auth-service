@@ -18,7 +18,7 @@ func (s *authService) newSession(ctx context.Context, userID string) (string, er
 }
 
 func (m *authServiceMux) newSession(w http.ResponseWriter, r *http.Request) {
-	userID, err := m.validateAndGetUserIDCtx(r)
+	userID, err := m.validateAndGetUserID(r)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return

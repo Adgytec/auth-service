@@ -64,7 +64,7 @@ func parseAuthHeader(authHeader string) (string, string, error) {
 	return scheme, value, nil
 }
 
-func (m *authServiceMux) validateAndGetUserIDCtx(r *http.Request) (string, error) {
+func (m *authServiceMux) validateAndGetUserID(r *http.Request) (string, error) {
 	authHeader := r.Header.Get(authorizationHeaderKey)
 	scheme, value, authErr := parseAuthHeader(authHeader)
 	if authErr != nil {
