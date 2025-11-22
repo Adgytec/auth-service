@@ -41,7 +41,10 @@ func newHTTPServer() (Server, error) {
 			Msgf("missing HTTP_PORT env variable, using default http port: %s", defaultHTTPPort)
 	}
 
-	mux := router.NewHTTPRouter()
+	mux, muxErr := router.NewHTTPRouter()
+	if muxErr != nil {
+		return nil, muxErr
+	}
 
 	var protocols http.Protocols
 	protocols.SetUnencryptedHTTP2(true)

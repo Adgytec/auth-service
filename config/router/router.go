@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func NewHTTPRouter() *chi.Mux {
+func NewHTTPRouter() (*chi.Mux, error) {
 	log.Info().Msg("adding application mux")
 	mux := chi.NewMux()
 
@@ -40,7 +40,12 @@ func NewHTTPRouter() *chi.Mux {
 		MaxAge:           300,
 	}))
 
-	mux.Mount("/", authentication.NewServiceMux().Router())
+	authMux, authMuxErr := authentication.NewServiceMux()
+	if authMuxErr != nil {
+		return nil, authMuxErr
+	}
 
-	return mux
+	mux.Mount("/", authMux.Router())
+
+	return mux, nil
 }
