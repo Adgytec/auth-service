@@ -4,6 +4,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/Adgytec/auth-service/config/storage"
 	"github.com/Adgytec/auth-service/services/authentication"
 	"github.com/Adgytec/service-protos/auth/v1"
 	"github.com/rs/zerolog/log"
@@ -33,7 +34,7 @@ func (s *grpcServer) Shutdown() error {
 	return nil
 }
 
-func newGRPCServer() (Server, error) {
+func newGRPCServer(s storage.Storage) (Server, error) {
 	grpcPort := os.Getenv("GRPC_PORT")
 	if grpcPort == "" {
 		grpcPort = defaultGRPCPort
@@ -47,7 +48,7 @@ func newGRPCServer() (Server, error) {
 	}
 
 	serverRegistrar := grpc.NewServer()
-	auth.RegisterAuthServiceServer(serverRegistrar, authentication.NewAuthServicePC())
+	auth.RegisterAuthServiceServer(serverRegistrar, authentication.NewAuthServicePC(s))
 
 	return &grpcServer{
 		server:   serverRegistrar,

@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Adgytec/auth-service/config/storage"
 	"github.com/Adgytec/auth-service/services/authentication"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -11,7 +12,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func NewHTTPRouter() *chi.Mux {
+func NewHTTPRouter(s storage.Storage) (*chi.Mux, error) {
 	log.Info().Msg("adding application mux")
 	mux := chi.NewMux()
 
@@ -40,7 +41,12 @@ func NewHTTPRouter() *chi.Mux {
 		MaxAge:           300,
 	}))
 
-	mux.Mount("/", authentication.NewServiceMux().Router())
+	authMux, authMuxErr := authentication.NewServiceMux(s)
+	if authMuxErr != nil {
+		return nil, authMuxErr
+	}
 
-	return mux
+	mux.Mount("/", authMux.Router())
+
+	return mux, nil
 }
