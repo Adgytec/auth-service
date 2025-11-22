@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Adgytec/auth-service/config/router"
+	"github.com/Adgytec/auth-service/config/storage"
 	"github.com/rs/zerolog/log"
 )
 
@@ -33,7 +34,7 @@ func (s *httpServer) Shutdown() error {
 	return s.server.Shutdown(shutdownCtx)
 }
 
-func newHTTPServer() (Server, error) {
+func newHTTPServer(s storage.Storage) (Server, error) {
 	httpPort := os.Getenv("HTTP_PORT")
 	if httpPort == "" {
 		httpPort = defaultHTTPPort
@@ -41,7 +42,7 @@ func newHTTPServer() (Server, error) {
 			Msgf("missing HTTP_PORT env variable, using default http port: %s", defaultHTTPPort)
 	}
 
-	mux, muxErr := router.NewHTTPRouter()
+	mux, muxErr := router.NewHTTPRouter(s)
 	if muxErr != nil {
 		return nil, muxErr
 	}

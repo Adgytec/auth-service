@@ -2,6 +2,8 @@ package server
 
 import (
 	"errors"
+
+	"github.com/Adgytec/auth-service/config/storage"
 )
 
 type Server interface {
@@ -37,12 +39,15 @@ func (s *httpAndGRPCServer) Shutdown() error {
 }
 
 func NewServer() (Server, error) {
-	httpServer, httpServerErr := newHTTPServer()
+	// create new storage
+	s := storage.New()
+
+	httpServer, httpServerErr := newHTTPServer(s)
 	if httpServerErr != nil {
 		return nil, httpServerErr
 	}
 
-	grpcServer, grpcServerErr := newGRPCServer()
+	grpcServer, grpcServerErr := newGRPCServer(s)
 	if grpcServerErr != nil {
 		return nil, grpcServerErr
 	}

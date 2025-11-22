@@ -1,7 +1,13 @@
 package authentication
 
-type authService struct{}
+import "github.com/Adgytec/auth-service/config/storage"
 
-func newAuthService() *authService {
-	return &authService{}
+type authService struct {
+	s storage.Storage
+}
+
+func newAuthService(s storage.Storage) *authService {
+	return &authService{
+		s: s,
+	}
 }

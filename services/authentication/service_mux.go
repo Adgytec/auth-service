@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Adgytec/auth-service/config/storage"
 	"github.com/Adgytec/auth-service/utils/services"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/go-chi/chi/v5"
@@ -24,7 +25,7 @@ func (m *authServiceMux) Router() *chi.Mux {
 	return mux
 }
 
-func NewServiceMux() (services.Mux, error) {
+func NewServiceMux(s storage.Storage) (services.Mux, error) {
 	userPoolID := os.Getenv("AWS_USER_POOL_ID")
 	if userPoolID == "" {
 		return nil, errors.New("can't find value for AWS_USER_POOL_ID env variable")
@@ -42,7 +43,7 @@ func NewServiceMux() (services.Mux, error) {
 	}
 
 	return &authServiceMux{
-		service:    newAuthService(),
+		service:    newAuthService(s),
 		jwtKeyfunc: jwtKeyfunc,
 	}, nil
 }

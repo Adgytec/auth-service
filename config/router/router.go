@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Adgytec/auth-service/config/storage"
 	"github.com/Adgytec/auth-service/services/authentication"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -11,7 +12,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func NewHTTPRouter() (*chi.Mux, error) {
+func NewHTTPRouter(s storage.Storage) (*chi.Mux, error) {
 	log.Info().Msg("adding application mux")
 	mux := chi.NewMux()
 
