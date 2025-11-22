@@ -18,6 +18,9 @@ type authServiceMux struct {
 func (m *authServiceMux) Router() *chi.Mux {
 	mux := chi.NewMux()
 
+	mux.Post("/new-session", m.newSession)
+	mux.Post("/logout", m.logout)
+
 	return mux
 }
 
