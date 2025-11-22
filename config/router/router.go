@@ -41,7 +41,7 @@ func NewHTTPRouter(s storage.Storage) (*chi.Mux, error) {
 		MaxAge:           300,
 	}))
 
-	authMux, authMuxErr := authentication.NewServiceMux()
+	authMux, authMuxErr := authentication.NewServiceMux(s)
 	if authMuxErr != nil {
 		return nil, authMuxErr
 	}
