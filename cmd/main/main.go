@@ -67,13 +67,10 @@ func main() {
 	}
 
 	go func() {
-		if err := appServer.ListenAndServe(); err != nil {
-			// when one server closes automatically close another
-			if !errors.Is(err, http.ErrServerClosed) {
-				// don't log when err server closed error
-				log.Error().Err(err).Msg("server error, triggering shutdown")
-			}
-			stop()
+		defer stop()
+		if err := appServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			// don't log when err server closed error
+			log.Error().Err(err).Msg("server error, triggering shutdown")
 		}
 	}()
 
