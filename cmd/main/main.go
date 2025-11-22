@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -68,8 +69,8 @@ func main() {
 
 	go func() {
 		defer stop()
-		if err := appServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			// don't log when err server closed error
+		if err := appServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) && !errors.Is(err, net.ErrClosed) {
+			// don't log when err server closed error or listener closed
 			log.Error().Err(err).Msg("server error, triggering shutdown")
 		}
 	}()

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"errors"
 	"net"
 	"os"
 
@@ -31,11 +30,6 @@ func (s *grpcServer) Shutdown() error {
 	log.Info().Msg("grpc server shutting down")
 
 	s.server.GracefulStop()
-	listenerErr := s.listener.Close()
-	if !errors.Is(listenerErr, net.ErrClosed) {
-		return listenerErr
-	}
-
 	return nil
 }
 
